@@ -3,7 +3,6 @@ import json
 import re
 
 class Task1:
-
     def endGame(self,players,total_kills,n_kill,n_killed,games):
         players = np.unique(players)
         new = []
@@ -47,7 +46,7 @@ class Task1:
                 game.append(f)
                 n_kill.append(self.eachN_kill(f))
                 n_killed.append(self.eachN_killed(f))
-                total_kills = len(n_kill)
+                total_kills+= 1
             if str(f).find("ClientUserinfoChanged")>0:
                 players.append(f.split('n\\')[1].split('t\\')[0].split('\\')[0])
             if str(f).find("-------------------------")>0 and verify==0:
@@ -93,6 +92,7 @@ class Bonus:
                 all['id'] = game
                 all[name] = score
                 death = []
+                verify = 1
         return all
 
 t = Task1()
