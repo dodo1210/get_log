@@ -2,29 +2,20 @@ import numpy as np
 import json
 import re
 
-file = open('qgames.log',"r")
-
 class Task1:
 
     def endGame(self,players,total_kills,n_kill,n_killed,games):
+        players = np.unique(players)
         new = []
         for p in players:
             if p in players:
                 new.append(p)
         players = new
-        score = {}
-        
-        #n_kill.remove('<world>')
-        count = 0
 
-        for name in n_kill:
-            if name != '<world>':
-                count+= 1
-                score[str(name)] = count
-        count = 0
-        for name in n_killed:
-            score[str(name)] = count
-            count-= 1
+        score = {}
+        for p in players:
+            if p != '<world>':
+                score[str(p)] = n_kill.count(p)-n_killed.count(p)
         r = {}
         r['id'] = games
         r['total_kills'] = total_kills
@@ -47,36 +38,68 @@ class Task1:
         n_kill = []
         n_killed = []
         games = 1
+        verify = 1
 
         for f in file.readlines():
+            if str(f).find("InitGame")>0:
+                verify = 0
             if str(f).find("killed")>0:
                 game.append(f)
                 n_kill.append(self.eachN_kill(f))
                 n_killed.append(self.eachN_killed(f))
-                total_kills+=1
-
+                total_kills = len(n_kill)
             if str(f).find("ClientUserinfoChanged")>0:
                 players.append(f.split('n\\')[1].split('t\\')[0].split('\\')[0])
-            
-            if str(f).find("InitGame")>0:
-                name = str("game_"+str(games))
-                all[name]=self.endGame(players,total_kills,n_kill,n_killed,games)
+            if str(f).find("-------------------------")>0 and verify==0:
+                all[str(games)]=self.endGame(players,total_kills,n_kill,n_killed,games)
                 games+=1
                 players = []
                 n_kill = []
                 n_killed = []
                 game = []
                 total_kills = 0
+                verify = 1
         return all
         
 class Task2:
     def task2(self,score):
         print(score)
 
+class Bonus:
+    def bonus(self,file):
+        death = []
+        cause_death = "MOD_UNKNOWN,MOD_SHOTGUN,MOD_GAUNTLET,MOD_MACHINEGUN,MOD_GRENADE,MOD_GRENADE_SPLASH,MOD_ROCKET,MOD_ROCKET_SPLASH,MOD_PLASMA,MOD_PLASMA_SPLASH,MOD_RAILGUN,MOD_LIGHTNING,MOD_BFG,MOD_BFG_SPLASH,MOD_WATER,MOD_SLIME,MOD_LAVA,MOD_CRUSH,MOD_TELEFRAG,MOD_FALLING,MOD_SUICIDE,MOD_TARGET_LASER,MOD_TRIGGER_HURT,MOD_NAIL,MOD_CHAINGUN,MOD_PROXIMITY_MINE,MOD_KAMIKAZE,MOD_JUICED,MOD_GRAPPLE"
+        all = {}
+        game = 0
+        verify = 1
 
+        for f in file.readlines():
+            if str(f).find("InitGame")>0:
+                verify = 0
+            if f.find("killed")>0:
+                name = re.sub('\n',"",f.split('by ')[1])
+                for cs in cause_death.split(','):
+                    if cs == name:
+                        death.append(name)
+
+            if str(f).find("-------------------------")>0 and verify==0:
+                game+=1
+                score = {}
+                name = "game_"+str(game)
+                count = 0
+                for n in death:
+                    score[str(n)] = death.count(n)
+                count = 0
+                all['id'] = game
+                all[name] = score
+                death = []
+        return all
 
 t = Task1()
-score = t.task1(file)   
+score = t.task1(open('qgames.log',"r"))   
 
 t2 = Task2()
 t2.task2(score)
+
+b = Bonus()
+print(b.bonus(open('qgames.log',"r")))
