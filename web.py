@@ -1,8 +1,5 @@
-from flask import Flask, jsonify, request
-from urllib.request import urlopen, Request
-import os
+from flask import Flask
 import numpy as np 
-import json
 import re
 from get_log import Task1
 
