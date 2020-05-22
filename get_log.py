@@ -60,8 +60,15 @@ class Task1:
         return all
         
 class Task2:
-    def task2(self,score):
-        print(score)
+    def task2(self,file):
+        n_kill = []
+        for f in file.readlines():
+            if str(f).find("killed")>0:
+                n_kill.append(Task1().eachN_kill(f))
+        players = np.unique(n_kill)
+        for p in players:
+            if p != '<world>':
+                print(p+" matou "+str(n_kill.count(p)))
 
 class Bonus:
     def bonus(self,file):
@@ -98,7 +105,7 @@ t = Task1()
 score = t.task1(open('qgames.log',"r"))   
 
 t2 = Task2()
-t2.task2(score)
+t2.task2(open('qgames.log',"r"))
 
 b = Bonus()
 print(b.bonus(open('qgames.log',"r")))
