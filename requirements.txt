@@ -1,0 +1,7 @@
+regex==2020.4.4
+requests==2.20.0
+requests-oauthlib==1.2.0
+resampy==0.2.1
+numpy==1.14.2
+Flask==1.1.2
+backports.os==0.1.1
