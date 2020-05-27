@@ -1,7 +1,5 @@
 from flask import Flask
 import os
-import numpy as np 
-import re
 from get_log import Task1
 
 app = Flask(__name__)
